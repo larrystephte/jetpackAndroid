@@ -1,4 +1,4 @@
-package com.onebilliongod.android.jetpackandroid.ui.theme
+package com.onebilliongod.android.jetpackandroid.view.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

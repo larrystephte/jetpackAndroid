@@ -8,8 +8,11 @@ espressoCore = "3.5.1"
 lifecycleRuntimeKtx = "2.6.1"
 activityCompose = "1.8.0"
 composeBom = "2023.08.00"
+
+#Use Hilt to manage dependency injection, similar to how it is done in Spring MVC
 hilt = "2.51"
 hiltNavigationCompose = "1.2.0"
+
 retrofit = "2.9.0"
 okhttp = "3.12.12"
 datastorePreferences = "1.1.1"

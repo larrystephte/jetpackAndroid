@@ -23,6 +23,10 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.flow.map
 
+/**
+ * side navigation bar for landscape screen devices.
+ * Provides navigation options to the Home and Profile screens.
+ */
 @Composable
 fun SideNavigationRail(modifier: Modifier = Modifier, navController: NavHostController) {
     val currentRoute by navController.currentBackStackEntryFlow
@@ -59,7 +63,9 @@ fun SideNavigationRail(modifier: Modifier = Modifier, navController: NavHostCont
                     }
                 }
             )
+
             Spacer(modifier = Modifier.height(8.dp))
+
             NavigationRailItem(
                 icon = {
                     Icon(

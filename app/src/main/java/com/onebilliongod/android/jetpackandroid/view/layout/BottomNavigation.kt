@@ -15,6 +15,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.flow.map
 
+/**
+ * Bottom navigation bar for small screen devices.
+ * Provides navigation options to the Home and Profile screens.
+ */
 @Composable
 fun BottomNavigation(modifier: Modifier = Modifier, navController: NavHostController) {
     val currentRoute by navController.currentBackStackEntryFlow

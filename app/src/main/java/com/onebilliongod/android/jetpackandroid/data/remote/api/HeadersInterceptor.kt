@@ -9,6 +9,9 @@ import okhttp3.Response
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/**
+ * add accessToken to avery http  header
+ */
 @Singleton
 class HeadersInterceptor @Inject constructor(
     private val preferencesManager: PreferencesManager

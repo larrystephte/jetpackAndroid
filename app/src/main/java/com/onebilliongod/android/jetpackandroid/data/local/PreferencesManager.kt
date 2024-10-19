@@ -11,6 +11,9 @@ import kotlinx.coroutines.flow.map
 
 val Context.dataStore by preferencesDataStore(name = "settings")
 
+/**
+ * PreferencesManager class to manage saving, retrieving, and removing data using DataStore.
+ */
 class PreferencesManager(private val context: Context) {
 
     suspend fun <T> saveData(key: Preferences.Key<T>, value: T) {

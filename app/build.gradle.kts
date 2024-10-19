@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
 
     alias(libs.plugins.hilt.android)
-    id("kotlin-kapt") // 添加 kapt 插件
+    id("kotlin-kapt")
     alias(libs.plugins.plugin.serialization)
 }
 
@@ -37,13 +37,13 @@ android {
         }
     }
 
-    flavorDimensions += "env"  // 添加 flavor 维度
+    flavorDimensions += "env"  //
 
-    // 配置 productFlavors,环境变量
+    //  productFlavors, env
     productFlavors {
         create("dev") {
             dimension = "env"
-            buildConfigField("String", "BASE_URL", "\"http://*.com/\"")
+            buildConfigField("String", "BASE_URL", "\"http://*/\"")
         }
         create("staging") {
             dimension = "env"
@@ -65,7 +65,7 @@ android {
 
     buildFeatures {
         compose = true
-        buildConfig = true  // 确保 buildConfig 生成
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"

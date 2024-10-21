@@ -60,12 +60,13 @@ fun ProfileScreen(windowSize: WindowWidthSizeClass) {
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = "profile") {
-        composable("profile") { ProfileScreenLayout(windowSize) }
+        composable("profile") { ProfileScreenLayout(windowSize, navController) }
+        composable("trainingRecord") { TrainingRecordScreen() }
     }
 }
 
 @Composable
-fun ProfileScreenLayout(windowSize: WindowWidthSizeClass, authViewModel: AuthViewModel = hiltViewModel()) {
+fun ProfileScreenLayout(windowSize: WindowWidthSizeClass, navController: NavHostController, authViewModel: AuthViewModel = hiltViewModel()) {
     var showLogoutDialog by remember { mutableStateOf(false) }
 
     var isTablet = windowSize != WindowWidthSizeClass.Compact
@@ -79,7 +80,7 @@ fun ProfileScreenLayout(windowSize: WindowWidthSizeClass, authViewModel: AuthVie
             )) {
                 Column(modifier = Modifier.weight(1f)) {
                     MyPageCard(title = "Training Record", onClick = {
-                        /* TODO Training Record List */
+                        navController.navigate("trainingRecord")
                     }, isCompact = true)
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_large)))
                     MyPageCard(title = "Help", onClick = { /* TODO Help */ }, isCompact = true)

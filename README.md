@@ -7,8 +7,6 @@ This project is an Android application designed to communicate with a lower-leve
 - **Login and Training Page**: The training page contains a line chart and settings functionality. It features start and stop buttons to manage training sessions.
   - Set up the desired parameters first, save them, then click **Start** to initiate communication with the lower-level device over TCP.
   - The line chart will start moving dynamically as data flows in real-time.
-  - Click **Stop** when the training session is over to save the data.
-- **Historical Records**: View previous training records and analyze past sessions.
 
 ## Technologies Used
 
@@ -27,15 +25,6 @@ This project is an Android application designed to communicate with a lower-leve
 - **MainActivity**: Entry point for the app.
 - **EntryScreen**: Manages login state, determining if a user is logged in.
 - **Navigation**: Uses `NavHost` to manage navigation between screens.
-- **Adaptive UI**: The app adjusts the UI based on the screen orientation.
-  - In **landscape mode**, the menu is displayed on the left side.
-  - In **portrait mode** (typically on phones), the menu is shown at the bottom.
-- **Screens**:
-  - **LoginScreen**: The login page for the app.
-  - **MainScreen**: Determines adaptive behavior based on screen size and orientation.
-  - **HomeScreen**: Contains the main content, including:
-    - **ComposeChart**: Displays the training line chart.
-    - **SettingScreen**: Allows configuration of training parameters.
 
 ## Installation
 
@@ -43,7 +32,7 @@ To install and run the app:
 
 1. Clone the repository:
    ```bash
-   git clone <repository_url>
+   git clone https://github.com/larrystephte/jetpackAndroid.git
    ```
 2. Open the project in **Android Studio**.
 3. Install dependencies using Gradle.
@@ -55,3 +44,7 @@ To install and run the app:
 This project aims to facilitate communication between an Android app and a lower-level device using TCP, providing real-time visual feedback through charts. It serves as a helpful tool for training and monitoring data.
 
 Feel free to explore, contribute, or use this project as a foundation for further development.
+
+![login](https://github.com/larrystephte/jetpackAndroid/blob/master/login.png)
+
+![home](https://github.com/larrystephte/jetpackAndroid/blob/master/home.png)

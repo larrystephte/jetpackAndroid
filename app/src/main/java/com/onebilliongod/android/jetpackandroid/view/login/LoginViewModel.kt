@@ -9,7 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.onebilliongod.android.jetpackandroid.data.local.PreferenceKeys
 import com.onebilliongod.android.jetpackandroid.data.local.PreferencesManager
 import com.onebilliongod.android.jetpackandroid.data.remote.models.request.LoginReq
-import com.onebilliongod.android.jetpackandroid.data.repository.LoginRepository
+import com.onebilliongod.android.jetpackandroid.data.remote.repository.LoginRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

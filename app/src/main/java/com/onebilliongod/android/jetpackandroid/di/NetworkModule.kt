@@ -4,6 +4,8 @@ import com.onebilliongod.android.jetpackandroid.data.local.PreferencesManager
 import com.onebilliongod.android.jetpackandroid.data.remote.api.ApiService
 import com.onebilliongod.android.jetpackandroid.data.remote.api.HeadersInterceptor
 import com.onebilliongod.android.jetpackandroid.data.remote.api.NetworkFactory
+import com.onebilliongod.android.jetpackandroid.data.socket.client.TcpClient
+import com.onebilliongod.android.jetpackandroid.data.socket.parser.FloatPacketParser
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -42,4 +44,15 @@ object NetworkModule {
         return retrofit.create(ApiService::class.java)
     }
 
+    /**
+     * inject tcp client
+     */
+    @Provides
+    @Singleton
+    fun provideTcpClient() : TcpClient {
+        val host = ""
+        val port = 8000
+
+        return TcpClient(host = host, port = port, parser = FloatPacketParser())
+    }
 }

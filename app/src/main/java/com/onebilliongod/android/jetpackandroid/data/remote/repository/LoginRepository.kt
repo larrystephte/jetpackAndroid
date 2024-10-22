@@ -1,4 +1,4 @@
-package com.onebilliongod.android.jetpackandroid.data.repository
+package com.onebilliongod.android.jetpackandroid.data.remote.repository
 
 import com.onebilliongod.android.jetpackandroid.data.remote.api.ApiService
 import com.onebilliongod.android.jetpackandroid.data.remote.models.request.LoginReq

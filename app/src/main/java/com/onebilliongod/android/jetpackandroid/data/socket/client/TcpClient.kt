@@ -21,20 +21,23 @@ import kotlinx.coroutines.launch
 import java.nio.ByteBuffer
 import io.ktor.utils.io.writeFully
 import kotlinx.coroutines.delay
+import java.nio.charset.Charset
 
 /**
  * Managing tcp connect client.
  * PacketParser is a parser that parses data received from the device.
  */
-class TcpClient(private val host: String,
-                private val port: Int,
-                private val parser: PacketParser<List<Float>>
+class TcpClient(
+    private val host: String,
+    private val port: Int,
+    private val parser: PacketParser<List<Float>>
 ) {
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private val selectorManager = ActorSelectorManager(Dispatchers.IO)
 
     //use this channel to send data to the business layer
     val messageChannel = Channel<ByteArray>(Channel.UNLIMITED)
+
     //use this sendMessageChannel to  receive data from the business layer
     val sendMessageChannel = Channel<ByteArray>(Channel.UNLIMITED)
 
@@ -64,7 +67,7 @@ class TcpClient(private val host: String,
                     Log.i("TcpClient", "Connected to server $host:$port")
                 } catch (e: Exception) {
                     Log.e("TcpClient", "Connection error: ${e.message}")
-                    reconnect() // 尝试重连
+                    reconnect()
                 }
             }
         }
@@ -80,6 +83,7 @@ class TcpClient(private val host: String,
      * Validate the receive data to check if the TCP data contains any packet sticking or other issues.
      */
     private suspend fun receiveData(input: ByteReadChannel) {
+        Log.i("TcpClient", "start receive data")
         //Allocate a sufficiently large buffer to store the bytes read from the socket and handler packet sticking and partial packets.
         val buffer = ByteBuffer.allocate(1024 * 10)
         try {
@@ -105,14 +109,14 @@ class TcpClient(private val host: String,
 
                     buffer.compact()
                 } else if (bytesRead == -1) {
-                    Log.i("TcpClient","Connection closed by server")
+                    Log.i("TcpClient", "Connection closed by server")
                     break
                 }
 
                 // delay(1) //
             }
         } catch (e: Exception) {
-            Log.e("TcpClient","Receive error: ${e.message}")
+            Log.e("TcpClient", "Receive error: ${e.message}")
         } finally {
             messageChannel.close()
         }
@@ -124,11 +128,13 @@ class TcpClient(private val host: String,
      * @param buffer The ByteBuffer containing data to be parsed.
      */
     private fun parseBuffer(buffer: ByteBuffer) {
+        Log.i("TcpClient", "parseBuffer")
         while (true) {
             buffer.mark() // Mark the current position in the buffer
 
             //check if there is enough data to read the start sequence and Length field.
             if (buffer.remaining() < parser.startSequence.size + 1) {
+                Log.i("TcpClient", "${buffer.remaining()} < ${parser.startSequence.size} + 1")
                 buffer.reset()
                 break
             }
@@ -144,6 +150,7 @@ class TcpClient(private val host: String,
 
             //Read the length field, ensuring there is enough data remaining.
             if (buffer.remaining() < 1) {
+                Log.i("TcpClient", "buffer.remaining() < 1")
                 buffer.reset()
                 break
             }
@@ -154,6 +161,7 @@ class TcpClient(private val host: String,
             //Check if there is enough data to read the full packet, including the end sequence.
             val totalPacketSize = parser.startSequence.size + 1 + length + parser.endSequence.size
             if (buffer.remaining() + parser.startSequence.size + 1 < totalPacketSize) {
+                Log.i("TcpClient", "buffer.remaining() + parser.startSequence.size + 1 < totalPacketSize")
                 buffer.reset()
                 break
             }
@@ -164,6 +172,7 @@ class TcpClient(private val host: String,
             buffer.get(packet)
 
             //Send the extracted packet to the message channel for further processing.
+            Log.i("TcpClient", "messageChannel.trySend:${packet}")
             messageChannel.trySend(packet)
         }
     }
@@ -190,22 +199,24 @@ class TcpClient(private val host: String,
     /**
      * Continuously sends data from the sendMessageChannel to the output channel.
      */
-     suspend fun sendData(output: ByteWriteChannel) {
+    private suspend fun sendData(output: ByteWriteChannel) {
+        Log.i("TcpClient", "sendData")
         try {
             //// Continuously retrieve messages from sendMessageChannel and send them
             for (message in sendMessageChannel) {
+                Log.i("TcpClient", "sendData-get-message,${message}")
                 try {
                     // Write the message to the output channel
                     output.writeFully(message)
                     output.flush() // Ensure data is sent immediately
-                    Log.i("TcpClient","Data sent: ${message.contentToString()}")
+                    Log.i("TcpClient", "Data sent: ${message.contentToString()}")
                 } catch (e: Exception) {
                     Log.e("TcpClient", "Error sending data: ${e.message}")
                     break
                 }
             }
         } catch (e: Exception) {
-            Log.e("TcpClient","Send data loop error: ${e.message}")
+            Log.e("TcpClient", "Send data loop error: ${e.message}")
         }
     }
 
@@ -224,14 +235,14 @@ class TcpClient(private val host: String,
             var retryCount = 0
             while (retryCount < MAX_RETRY_COUNT) {
                 try {
-                    Log.i("TcpClient","Reconnecting... Attempt ${retryCount + 1}")
+                    Log.i("TcpClient", "Reconnecting... Attempt ${retryCount + 1}")
                     start()  // Attempt to re-establish the connection
                     if (isConnected()) {
-                        Log.i("TcpClient","Reconnected successfully.")
+                        Log.i("TcpClient", "Reconnected successfully.")
                         break
                     }
                 } catch (e: Exception) {
-                    Log.e("TcpClient","Reconnect failed: ${e.message}")
+                    Log.e("TcpClient", "Reconnect failed: ${e.message}")
                 }
                 retryCount++
                 delay(RETRY_DELAY_MS)

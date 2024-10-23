@@ -50,8 +50,8 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideTcpClient() : TcpClient {
-        val host = ""
-        val port = 8000
+        val host = "*.*.*.*"
+        val port = 2500
 
         return TcpClient(host = host, port = port, parser = FloatPacketParser())
     }

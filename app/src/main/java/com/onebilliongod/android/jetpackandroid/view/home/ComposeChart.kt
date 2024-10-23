@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberAxisLabelComponent
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottomAxis
@@ -40,6 +41,7 @@ import com.patrykandpatrick.vico.core.common.Dimensions
 import com.patrykandpatrick.vico.core.common.Legend
 import com.patrykandpatrick.vico.core.common.LegendItem
 import com.patrykandpatrick.vico.core.common.shape.Shape
+import com.techtrend.intelligent.chunli_clr.view.home.viewmodel.TcpViewModel
 
 /**
  * ComposeChart composable that renders a 3-line chart using the Vico chart library.
@@ -49,7 +51,7 @@ import com.patrykandpatrick.vico.core.common.shape.Shape
  * - Uses Vico's Cartesian chart components to render a visually dynamic and customizable chart.
  */
 @Composable
-fun ComposeChart(modifier: Modifier, viewModel: ChartViewModel) {
+fun ComposeChart(modifier: Modifier, viewModel: ChartViewModel, tcpViewModel: TcpViewModel = hiltViewModel()) {
     val chartData by viewModel.chartData.collectAsState()
 
     // Mutable lists to keep track of x and y values for three data series

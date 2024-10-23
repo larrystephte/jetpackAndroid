@@ -2,16 +2,9 @@ package com.onebilliongod.android.jetpackandroid.data.socket.parser
 
 /**
  * Specific parser for Float data packets.
- *
- * This parser extends the abstract PacketParser to parse packets containing
- * multiple 4-byte floating-point numbers. The packet format consists of a start
- * sequence, data section (containing floats), and an end sequence.
  */
 class FloatPacketParser : PacketParser<List<Float>>() {
-    // Start sequence for the packet: [0xAA, 0xFF, 0x55]
     override val startSequence = byteArrayOf(0xAA.toByte(), 0xFF.toByte(), 0x55.toByte())
-
-    //End sequence for the packet: [0xBB, 0xBB, 0x0D, 0x0A]
     override val endSequence = byteArrayOf(0xBB.toByte(), 0xBB.toByte(), 0x0D.toByte(), 0x0A.toByte())
 
     /**
@@ -33,7 +26,6 @@ class FloatPacketParser : PacketParser<List<Float>>() {
             // Create a ByteBuffer and set it to little-endian order.
             val buffer = java.nio.ByteBuffer.wrap(dataBytes).order(java.nio.ByteOrder.LITTLE_ENDIAN)
 
-            // Read the float value from the buffer.
             floats.add(buffer.float)
         }
         return floats

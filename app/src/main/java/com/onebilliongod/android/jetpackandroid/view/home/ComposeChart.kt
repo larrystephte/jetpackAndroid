@@ -49,9 +49,11 @@ import com.techtrend.intelligent.chunli_clr.view.home.viewmodel.TcpViewModel
  *
  * - The chart consists of three lines representing different data sets (y, y2, and y3).
  * - Uses Vico's Cartesian chart components to render a visually dynamic and customizable chart.
+ *
+ * chartViewModel: ChartViewModel,
  */
 @Composable
-fun ComposeChart(modifier: Modifier, viewModel: ChartViewModel, tcpViewModel: TcpViewModel = hiltViewModel()) {
+fun ComposeChart(modifier: Modifier, viewModel: TcpViewModel) {
     val chartData by viewModel.chartData.collectAsState()
 
     // Mutable lists to keep track of x and y values for three data series

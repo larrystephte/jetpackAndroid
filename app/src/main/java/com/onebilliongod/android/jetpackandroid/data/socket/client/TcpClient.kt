@@ -20,8 +20,11 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.nio.ByteBuffer
 import io.ktor.utils.io.writeFully
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import java.nio.charset.Charset
+import kotlin.coroutines.cancellation.CancellationException
 
 /**
  * Managing tcp connect client.
@@ -30,28 +33,28 @@ import java.nio.charset.Charset
 class TcpClient(
     private val host: String,
     private val port: Int,
-    private val parser: PacketParser<List<Float>>
+    val parser: PacketParser<List<Float>>
 ) {
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private val selectorManager = ActorSelectorManager(Dispatchers.IO)
-
-    //use this channel to send data to the business layer
-    val messageChannel = Channel<ByteArray>(Channel.UNLIMITED)
-
-    //use this sendMessageChannel to  receive data from the business layer
-    val sendMessageChannel = Channel<ByteArray>(Channel.UNLIMITED)
-
     private var socket: Socket? = null
     private var input: ByteReadChannel? = null
     private var output: ByteWriteChannel? = null
 
+    //use this channel to send data to the business layer
+    val messageChannel = Channel<ByteArray>(Channel.UNLIMITED)
+    //use this sendMessageChannel to  receive data from the business layer
+    val sendMessageChannel = Channel<ByteArray>(Channel.UNLIMITED)
+
     private val MAX_RETRY_COUNT = 3
     private val RETRY_DELAY_MS = 100L
 
+    private var receiveJob: Job? = null
+
     /**
-     * Establish a TCP connection and start the send and receive channels.
+     * Establish a TCP connection
      */
-    fun start() {
+    fun connect() {
         if (socket == null || socket?.isClosed == true) {
             scope.launch {
                 try {
@@ -59,11 +62,10 @@ class TcpClient(
                     input = socket?.openReadChannel()
                     output = socket?.openWriteChannel(autoFlush = true)
 
-                    //start the receive channel
                     input?.let { launch { receiveData(it) } }
 
-                    //start the send channel
                     output?.let { launch { sendData(it) } }
+
                     Log.i("TcpClient", "Connected to server $host:$port")
                 } catch (e: Exception) {
                     Log.e("TcpClient", "Connection error: ${e.message}")
@@ -73,6 +75,21 @@ class TcpClient(
         }
 
     }
+
+    //start receive job
+//    fun startReceiving() {
+//        if (receiveJob == null || receiveJob?.isCancelled == true) {
+//            receiveJob = scope.launch {
+//                input?.let { launch { receiveData(it) } }
+//            }
+//        }
+//    }
+
+    //stop receive
+//    fun stopReceiving() {
+//        receiveJob?.cancel()
+//        receiveJob = null
+//    }
 
     //Verify the connection validity
     private fun isConnected(): Boolean {
@@ -115,10 +132,12 @@ class TcpClient(
 
                 // delay(1) //
             }
-        } catch (e: Exception) {
+        } catch (e: CancellationException) {
+            println("Receiving was cancelled.")
+        }  catch (e: Exception) {
             Log.e("TcpClient", "Receive error: ${e.message}")
         } finally {
-            messageChannel.close()
+           // messageChannel.close()
         }
     }
 
@@ -220,11 +239,17 @@ class TcpClient(
         }
     }
 
-    /**
-     * Stops the ongoing coroutine and cancels any remaining work.
-     */
-    fun stop() {
-        scope.cancel()
+
+    //dis connect
+    fun disconnect() {
+        scope.launch {
+            try {
+                socket?.close()
+                Log.i("TcpClient", "Connection closed")
+            } catch (e: Exception) {
+                Log.e("TcpClient","Error closing connection: ${e.message}")
+            }
+        }
     }
 
     /**
@@ -236,7 +261,7 @@ class TcpClient(
             while (retryCount < MAX_RETRY_COUNT) {
                 try {
                     Log.i("TcpClient", "Reconnecting... Attempt ${retryCount + 1}")
-                    start()  // Attempt to re-establish the connection
+                    connect()  // Attempt to re-establish the connection
                     if (isConnected()) {
                         Log.i("TcpClient", "Reconnected successfully.")
                         break

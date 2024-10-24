@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.techtrend.intelligent.chunli_clr.view.home.viewmodel.TcpViewModel
 
 /**
  * HomeScreen composable that displays the main content of the home page.
@@ -18,20 +19,20 @@ import androidx.hilt.navigation.compose.hiltViewModel
  */
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier,
-               chartViewModel: ChartViewModel = hiltViewModel()) {
+               viewModel: TcpViewModel = hiltViewModel()) {
     Column(
         modifier
             .verticalScroll(rememberScrollState())
     ) {
         ComposeChart(
-            viewModel= chartViewModel,
+            viewModel = viewModel,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(360.dp)
                 .padding(16.dp))
 
         SettingScreen(
-            chartViewModel = chartViewModel,
+            viewModel = viewModel,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)

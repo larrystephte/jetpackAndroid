@@ -35,6 +35,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.rememberNavController
+import com.onebilliongod.android.jetpackandroid.data.socket.client.TcpClient
+import com.techtrend.intelligent.chunli_clr.view.home.viewmodel.TcpViewModel
 
 data class TrainingMode(val id: Int, val name: String)
 
@@ -43,7 +45,7 @@ data class TrainingMode(val id: Int, val name: String)
  */
 @Composable
 fun SettingScreen(modifier: Modifier = Modifier,
-                  chartViewModel: ChartViewModel) {
+                  viewModel: TcpViewModel) {
     var expanded by remember { mutableStateOf(false) }
     var selectedModeId by remember { mutableStateOf<Int>(1) }
     var selectedModeName by remember { mutableStateOf<String>("driving") }
@@ -69,7 +71,7 @@ fun SettingScreen(modifier: Modifier = Modifier,
         ) {
             Button(
                 onClick = {
-                    chartViewModel.startDataGeneration()
+                    viewModel.start()
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Magenta,
@@ -92,7 +94,7 @@ fun SettingScreen(modifier: Modifier = Modifier,
 
             Button(
                 onClick = {
-                    chartViewModel.stopDataGeneration()
+                    viewModel.stop()
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Red,
@@ -273,8 +275,9 @@ fun SettingScreen(modifier: Modifier = Modifier,
 @Composable
 fun SettingPreview() {
     val navController = rememberNavController()
-    SettingScreen(chartViewModel = ChartViewModel(), modifier = Modifier
-        .fillMaxSize()
-        .padding(16.dp))
+
+//    SettingScreen(chartViewModel = TcpViewModel(), modifier = Modifier
+//        .fillMaxSize()
+//        .padding(16.dp))
 }
 

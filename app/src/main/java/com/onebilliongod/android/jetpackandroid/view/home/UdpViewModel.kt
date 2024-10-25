@@ -1,4 +1,4 @@
-package com.techtrend.intelligent.chunli_clr.view.home.viewmodel
+package com.onebilliongod.android.jetpackandroid.view.home
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

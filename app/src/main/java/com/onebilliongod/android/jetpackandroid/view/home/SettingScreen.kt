@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -35,8 +34,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.rememberNavController
-import com.onebilliongod.android.jetpackandroid.data.socket.client.TcpClient
-import com.techtrend.intelligent.chunli_clr.view.home.viewmodel.TcpViewModel
 
 data class TrainingMode(val id: Int, val name: String)
 
@@ -45,7 +42,8 @@ data class TrainingMode(val id: Int, val name: String)
  */
 @Composable
 fun SettingScreen(modifier: Modifier = Modifier,
-                  viewModel: TcpViewModel) {
+                  viewModel: TcpViewModel
+) {
     var expanded by remember { mutableStateOf(false) }
     var selectedModeId by remember { mutableStateOf<Int>(1) }
     var selectedModeName by remember { mutableStateOf<String>("driving") }

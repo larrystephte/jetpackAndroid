@@ -1,4 +1,4 @@
-package com.techtrend.intelligent.chunli_clr.view.home.viewmodel
+package com.onebilliongod.android.jetpackandroid.view.home
 
 import android.util.Log
 import androidx.compose.runtime.getValue
@@ -8,30 +8,21 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.onebilliongod.android.jetpackandroid.data.socket.client.TcpClient
 import com.onebilliongod.android.jetpackandroid.utils.HexUtil
-import com.onebilliongod.android.jetpackandroid.view.home.ChartData
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.ktor.network.selector.ActorSelectorManager
-import io.ktor.network.sockets.InetSocketAddress
-import io.ktor.network.sockets.aSocket
-import io.ktor.network.sockets.openReadChannel
-import io.ktor.network.sockets.openWriteChannel
-import io.ktor.utils.io.ByteReadChannel
-import io.ktor.utils.io.ByteWriteChannel
-import io.ktor.utils.io.charsets.Charset
-import io.ktor.utils.io.writeFully
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.nio.ByteBuffer
 import javax.inject.Inject
-import kotlin.random.Random
 import kotlin.time.TimeMark
 import kotlin.time.TimeSource
 
+data class ChartData(
+    val x : Int,
+    val y : Float,
+    val y2 : Float,
+    val y3 : Float,
+)
 //Just Test TCP
 @HiltViewModel
 class TcpViewModel @Inject constructor(private val tcpClient: TcpClient): ViewModel() {
@@ -48,9 +39,11 @@ class TcpViewModel @Inject constructor(private val tcpClient: TcpClient): ViewMo
     private var receiveJob: Job? = null
 
     init {
+//        connect()
+    }
+
+    fun connect() {
         tcpClient.connect()
-
-
     }
 
     fun start() {
@@ -64,6 +57,7 @@ class TcpViewModel @Inject constructor(private val tcpClient: TcpClient): ViewMo
 
         if (receiveJob == null || receiveJob?.isCancelled == true) {
             receiveJob = viewModelScope.launch {
+//                tcpClient.messageChannel = Channel<ByteArray>(Channel.UNLIMITED)
                 receiveMessage()
             }
         }
@@ -73,10 +67,18 @@ class TcpViewModel @Inject constructor(private val tcpClient: TcpClient): ViewMo
         receiveJob?.cancel()
         receiveJob = null
         isGeneratingData = false
+
+//        tcpClient.messageChannel.close()
+    }
+
+    fun disconnection() {
+        startTime = null
+        tcpClient.disconnect()
+
+        stop()
     }
 
     private suspend fun sendMessage(message: String) {
-        Log.i("TcpViewModel", "Test message:${message}")
         val messageByte = command(message)
         tcpClient.sendMessageChannel.send(messageByte)
     }
@@ -92,7 +94,7 @@ class TcpViewModel @Inject constructor(private val tcpClient: TcpClient): ViewMo
     private suspend fun receiveMessage() {
         try {
             for (message in tcpClient.messageChannel) {
-                //AAFF55 08 DDCCBBAA HHGGFFEE BBBB0D0A
+                //AAFF55 0C 000020C1 00005041 00009040 BBBB
                 val data = tcpClient.parser.parsePacket(message)
                 val t = startTime?.elapsedNow()!!.inWholeMilliseconds / 1000f
                 if (!data.isNullOrEmpty()) {

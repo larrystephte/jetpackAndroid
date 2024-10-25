@@ -15,15 +15,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.random.Random
 
-data class ChartData(
-    val x : Int,
-    val y : Float,
-    val y2 : Float,
-    val y3 : Float,
-)
-
 /**
- * ViewModel for managing the chart data generation.
+ * Mock ViewModel(This is for test and the real ViewModel is TcpViewModel) for managing the chart data generation.
  * Handles generating random data for the chart and maintains the state for data points.
  */
 @HiltViewModel

@@ -8,10 +8,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.techtrend.intelligent.chunli_clr.view.home.viewmodel.TcpViewModel
+import java.util.UUID
 
 /**
  * HomeScreen composable that displays the main content of the home page.
@@ -20,6 +23,12 @@ import com.techtrend.intelligent.chunli_clr.view.home.viewmodel.TcpViewModel
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier,
                viewModel: TcpViewModel = hiltViewModel()) {
+    val key = remember { UUID.randomUUID() }
+    //Connect Tcp Server when load screen
+    LaunchedEffect(key) {
+        viewModel.connect()
+    }
+
     Column(
         modifier
             .verticalScroll(rememberScrollState())
@@ -38,5 +47,12 @@ fun HomeScreen(modifier: Modifier = Modifier,
                 .padding(16.dp)
         )
 
+    }
+
+    //UnConnect Tcp Server when dispose screen
+    DisposableEffect(key) {
+        onDispose {
+            viewModel.disconnection()
+        }
     }
 }

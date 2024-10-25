@@ -42,7 +42,7 @@ class TcpClient(
     private var output: ByteWriteChannel? = null
 
     //use this channel to send data to the business layer
-    val messageChannel = Channel<ByteArray>(Channel.UNLIMITED)
+    var messageChannel = Channel<ByteArray>(Channel.UNLIMITED)
     //use this sendMessageChannel to  receive data from the business layer
     val sendMessageChannel = Channel<ByteArray>(Channel.UNLIMITED)
 
@@ -76,21 +76,6 @@ class TcpClient(
 
     }
 
-    //start receive job
-//    fun startReceiving() {
-//        if (receiveJob == null || receiveJob?.isCancelled == true) {
-//            receiveJob = scope.launch {
-//                input?.let { launch { receiveData(it) } }
-//            }
-//        }
-//    }
-
-    //stop receive
-//    fun stopReceiving() {
-//        receiveJob?.cancel()
-//        receiveJob = null
-//    }
-
     //Verify the connection validity
     private fun isConnected(): Boolean {
         return socket != null && socket?.isClosed == false
@@ -110,7 +95,7 @@ class TcpClient(
 
                 //check if the channel is close
                 if (input.isClosedForRead && input.availableForRead == 0) {
-                    println("Connection closed by server")
+                    Log.i("TcpClient", "Connection closed by server")
                     break
                 }
 
@@ -133,7 +118,7 @@ class TcpClient(
                 // delay(1) //
             }
         } catch (e: CancellationException) {
-            println("Receiving was cancelled.")
+            Log.e("TcpClient", "Receiving was cancelled.")
         }  catch (e: Exception) {
             Log.e("TcpClient", "Receive error: ${e.message}")
         } finally {
@@ -147,13 +132,11 @@ class TcpClient(
      * @param buffer The ByteBuffer containing data to be parsed.
      */
     private fun parseBuffer(buffer: ByteBuffer) {
-        Log.i("TcpClient", "parseBuffer")
         while (true) {
             buffer.mark() // Mark the current position in the buffer
 
             //check if there is enough data to read the start sequence and Length field.
             if (buffer.remaining() < parser.startSequence.size + 1) {
-                Log.i("TcpClient", "${buffer.remaining()} < ${parser.startSequence.size} + 1")
                 buffer.reset()
                 break
             }
@@ -169,7 +152,6 @@ class TcpClient(
 
             //Read the length field, ensuring there is enough data remaining.
             if (buffer.remaining() < 1) {
-                Log.i("TcpClient", "buffer.remaining() < 1")
                 buffer.reset()
                 break
             }
@@ -180,7 +162,6 @@ class TcpClient(
             //Check if there is enough data to read the full packet, including the end sequence.
             val totalPacketSize = parser.startSequence.size + 1 + length + parser.endSequence.size
             if (buffer.remaining() + parser.startSequence.size + 1 < totalPacketSize) {
-                Log.i("TcpClient", "buffer.remaining() + parser.startSequence.size + 1 < totalPacketSize")
                 buffer.reset()
                 break
             }
@@ -191,7 +172,6 @@ class TcpClient(
             buffer.get(packet)
 
             //Send the extracted packet to the message channel for further processing.
-            Log.i("TcpClient", "messageChannel.trySend:${packet}")
             messageChannel.trySend(packet)
         }
     }
@@ -219,11 +199,9 @@ class TcpClient(
      * Continuously sends data from the sendMessageChannel to the output channel.
      */
     private suspend fun sendData(output: ByteWriteChannel) {
-        Log.i("TcpClient", "sendData")
         try {
             //// Continuously retrieve messages from sendMessageChannel and send them
             for (message in sendMessageChannel) {
-                Log.i("TcpClient", "sendData-get-message,${message}")
                 try {
                     // Write the message to the output channel
                     output.writeFully(message)

@@ -23,11 +23,7 @@ import java.util.UUID
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier,
                viewModel: TcpViewModel = hiltViewModel()) {
-    val key = remember { UUID.randomUUID() }
-    //Connect Tcp Server when load screen
-    LaunchedEffect(key) {
-        viewModel.connect()
-    }
+
 
     Column(
         modifier
@@ -47,12 +43,5 @@ fun HomeScreen(modifier: Modifier = Modifier,
                 .padding(16.dp)
         )
 
-    }
-
-    //UnConnect Tcp Server when dispose screen
-    DisposableEffect(key) {
-        onDispose {
-            viewModel.disconnection()
-        }
     }
 }

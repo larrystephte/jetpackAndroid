@@ -1,6 +1,8 @@
 package com.onebilliongod.android.jetpackandroid.view.home
 
+import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -40,6 +42,7 @@ import com.patrykandpatrick.vico.core.common.Dimensions
 import com.patrykandpatrick.vico.core.common.Legend
 import com.patrykandpatrick.vico.core.common.LegendItem
 import com.patrykandpatrick.vico.core.common.shape.Shape
+import java.util.UUID
 
 /**
  * ComposeChart composable that renders a 3-line chart using the Vico chart library.
@@ -61,6 +64,24 @@ fun ComposeChart(modifier: Modifier, viewModel: TcpViewModel) {
     val yValuesList3 = remember { mutableStateListOf<Float>() }
 
     val modelProducer = remember { CartesianChartModelProducer() }
+
+    val key = remember { UUID.randomUUID() }
+    //Connect Tcp Server when load screen
+    LaunchedEffect(key) {
+        viewModel.connect()
+    }
+
+    //UnConnect Tcp Server when dispose screen
+    DisposableEffect(key) {
+        onDispose {
+            Log.i("ComposeChart", "DisposableEffect")
+            viewModel.disconnection()
+            xValuesList.clear()
+            yValuesList.clear()
+            yValuesList2.clear()
+            yValuesList3.clear()
+        }
+    }
 
     // Updating data values and applying them to the chart when chartData changes
     LaunchedEffect(chartData) {

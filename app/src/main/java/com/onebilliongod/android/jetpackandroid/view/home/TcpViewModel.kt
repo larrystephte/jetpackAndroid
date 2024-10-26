@@ -76,6 +76,7 @@ class TcpViewModel @Inject constructor(private val tcpClient: TcpClient): ViewMo
         tcpClient.disconnect()
 
         stop()
+        _chartData.value = startData
     }
 
     private suspend fun sendMessage(message: String) {

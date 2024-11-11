@@ -18,6 +18,9 @@ okhttp = "3.12.12"
 datastorePreferences = "1.1.1"
 kotlinxSerializationJson = "1.6.0"
 
+#serial
+usbserial = "3.8.1"
+
 #https://github.com/patrykandpatrick/vico
 #A light and extensible chart library for Android.
 vico = "2.0.0-alpha.28"
@@ -63,6 +66,9 @@ ktor-network = { group = "io.ktor", name = "ktor-network", version.ref = "ktor" 
 vico-compose = { group = "com.patrykandpatrick.vico", name = "compose", version.ref = "vico" }
 vico-compose-m3 = { group = "com.patrykandpatrick.vico", name = "compose-m3", version.ref = "vico" }
 vico-core = { group = "com.patrykandpatrick.vico", name = "core", version.ref = "vico" }
+
+usb-serial = {group = "com.github.mik3y", name = "usb-serial-for-android", version.ref = "usbserial"}
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

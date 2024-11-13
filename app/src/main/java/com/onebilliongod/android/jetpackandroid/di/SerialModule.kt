@@ -1,17 +1,9 @@
 package com.onebilliongod.android.jetpackandroid.di
 
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
-import android.hardware.usb.UsbManager
-import android.util.Log
-import com.hoho.android.usbserial.driver.Ch34xSerialDriver
-import com.hoho.android.usbserial.driver.ProbeTable
 import com.hoho.android.usbserial.driver.UsbSerialPort
-import com.hoho.android.usbserial.driver.UsbSerialProber
 import com.onebilliongod.android.jetpackandroid.data.socket.client.SerialClient
 import com.onebilliongod.android.jetpackandroid.data.socket.client.SerialConfig
-import com.onebilliongod.android.jetpackandroid.view.ACTION_USB_PERMISSION
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

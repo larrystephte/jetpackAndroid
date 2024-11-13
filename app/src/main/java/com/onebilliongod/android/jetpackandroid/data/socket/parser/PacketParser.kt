@@ -19,7 +19,7 @@ abstract class PacketParser<T> {
      * process the data portion. If the packet format is invalid or incomplete,
      * it returns null.
      */
-    fun parsePacket(packet: ByteArray): T? {
+    fun  parsePacket(packet: ByteArray): T? {
         var index = 0
 
         //Search for the start sequence within the packet.

@@ -42,7 +42,7 @@ data class TrainingMode(val id: Int, val name: String)
  */
 @Composable
 fun SettingScreen(modifier: Modifier = Modifier,
-                  viewModel: TcpViewModel
+                  viewModel: SerialViewModel
 ) {
     var expanded by remember { mutableStateOf(false) }
     var selectedModeId by remember { mutableStateOf<Int>(1) }

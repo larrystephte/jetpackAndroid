@@ -54,7 +54,7 @@ import java.util.UUID
  * chartViewModel: ChartViewModel,
  */
 @Composable
-fun ComposeChart(modifier: Modifier, viewModel: TcpViewModel) {
+fun ComposeChart(modifier: Modifier, viewModel: SerialViewModel) {
     val chartData by viewModel.chartData.collectAsState()
 
     // Mutable lists to keep track of x and y values for three data series

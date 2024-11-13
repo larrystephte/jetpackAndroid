@@ -22,7 +22,7 @@ import java.util.UUID
  */
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier,
-               viewModel: TcpViewModel = hiltViewModel()) {
+               viewModel: SerialViewModel = hiltViewModel()) {
 
 
     Column(

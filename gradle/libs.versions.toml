@@ -21,6 +21,7 @@ kotlinxSerializationJson = "1.6.0"
 #serial
 usbserial = "3.8.1"
 
+
 #https://github.com/patrykandpatrick/vico
 #A light and extensible chart library for Android.
 vico = "2.0.0-alpha.28"
@@ -29,6 +30,9 @@ vico = "2.0.0-alpha.28"
 #Framework for quickly creating connected applications in Kotlin with minimal effort
 #Tcp or Udp
 ktor = "2.0.0"
+
+#room
+room = "2.6.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -69,6 +73,11 @@ vico-core = { group = "com.patrykandpatrick.vico", name = "core", version.ref = 
 
 usb-serial = {group = "com.github.mik3y", name = "usb-serial-for-android", version.ref = "usbserial"}
 
+room-runtime = {group = "androidx.room", name = "room-runtime", version.ref = "room"}
+room-compiler = {group = "androidx.room", name = "room-compiler", version.ref = "room"}
+room-rtx = {group = "androidx.room", name = "room-ktx", version.ref = "room"}
+room-guava = {group = "androidx.room", name = "room-guava", version.ref = "room"}
+room-paging = {group = "androidx.room", name = "room-paging", version.ref = "room"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

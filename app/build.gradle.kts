@@ -108,6 +108,14 @@ dependencies {
 
     implementation(libs.usb.serial)
 
+    implementation(libs.room.runtime)
+    implementation(libs.room.compiler)
+    implementation(libs.room.rtx)
+    implementation(libs.room.guava)
+    implementation(libs.room.paging)
+    kapt(libs.room.compiler)
+//    ksp(libs.room.compiler)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

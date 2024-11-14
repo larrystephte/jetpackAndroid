@@ -1,11 +1,11 @@
-# TCP Training App
+# TCP or Serial Port Training App
 
-This project is an Android application designed to communicate with a lower-level device using TCP. The app's primary features include login, training functionality, real-time graph display, settings, and historical training record viewing.
+This project is an Android application designed to communicate with a lower-level device using TCP or Serial Port. The app's primary features include login, training functionality, real-time graph display, settings, and historical training record viewing.
 
 ## Main Features
 
 - **Login and Training Page**: The training page contains a line chart and settings functionality. It features start and stop buttons to manage training sessions.
-  - Set up the desired parameters first, save them, then click **Start** to initiate communication with the lower-level device over TCP.
+  - Set up the desired parameters first, save them, then click **Start** to initiate communication with the lower-level device over TCP or Serail Port.
   - The line chart will start moving dynamically as data flows in real-time.
 
 ## Technologies Used
@@ -18,6 +18,7 @@ This project is an Android application designed to communicate with a lower-leve
 - **Architecture**: ViewModel pattern to separate UI from data logic
 - **HTTP Connections**: Retrofit2
 - **TCP/UDP Communication**: Ktor
+- **Serail Communication**: usb-serial-for-android
 - **Chart Library**: Vico
 
 ### Jetpack Compose Details
@@ -37,6 +38,7 @@ To install and run the app:
 2. Open the project in **Android Studio**.
 3. Install dependencies using Gradle.
 4. Run the app on an emulator or physical device.
+5. You can run a test program in Go  for TCP or Serail Port in the `test/go` directory.	
 5. Perform a mock login, then click **Start** to see the line chart in action. Note that the data is currently mocked for testing purposes.
 
 ## Getting Started

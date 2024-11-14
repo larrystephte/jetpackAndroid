@@ -26,6 +26,7 @@ class MainApp : Application() {
         super.onCreate()
 
         registerUsbDeviceReceiver()
+//        registerPermissionReceiver()
 
         serialClient.probeAndCheckPermission()
     }
@@ -44,12 +45,14 @@ class MainApp : Application() {
     private fun registerPermissionReceiver() {
         Log.i("Application", "start registerReceiver:${Build.VERSION.SDK_INT}")
         val usbPermissionReceiver = UsbPermissionReceiver()
-        val filter = IntentFilter(ACTION_USB_PERMISSION)
+        val intentFilter = IntentFilter()
+        intentFilter.addAction(ACTION_USB_PERMISSION)
+//        val filter = IntentFilter(ACTION_USB_PERMISSION)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            this.registerReceiver(usbPermissionReceiver, filter, RECEIVER_NOT_EXPORTED)
+            registerReceiver(usbPermissionReceiver, intentFilter, RECEIVER_NOT_EXPORTED)
         } else {
-            this.registerReceiver(usbPermissionReceiver, filter)
+            registerReceiver(usbPermissionReceiver, intentFilter)
         }
     }
 

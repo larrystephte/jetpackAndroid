@@ -3,6 +3,8 @@ package com.onebilliongod.android.jetpackandroid.view.receiver
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.hardware.usb.UsbDevice
+import android.hardware.usb.UsbManager
 import android.util.Log
 import com.onebilliongod.android.jetpackandroid.data.socket.client.SerialClient
 import com.onebilliongod.android.jetpackandroid.di.UsbPermissionReceiverEntryPoint
@@ -18,6 +20,9 @@ class UsbPermissionReceiver : BroadcastReceiver() {
         Log.i("UsbPermissionReceiver", "onReceive-UsbPermissionReceiver:${intent.action}")
         if (ACTION_USB_PERMISSION == intent.action) {
             synchronized(this) {
+                val usbDevice = intent.getParcelableExtra<UsbDevice>(UsbManager.EXTRA_DEVICE)
+                Log.i("UsbPermissionReceiver", "usbDevice:$usbDevice")
+
                 //Manually obtain the SerialClient instance through EntryPoint
                 serialClient = EntryPointAccessors.fromApplication(
                     context.applicationContext,

@@ -183,7 +183,9 @@ fun SettingScreen(modifier: Modifier = Modifier,
             Spacer(modifier = Modifier.width(4.dp))
 
             Button(
-                onClick = { },
+                onClick = {
+                          viewModel.save()
+                },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFF4A4A4A),
                     contentColor = Color.White

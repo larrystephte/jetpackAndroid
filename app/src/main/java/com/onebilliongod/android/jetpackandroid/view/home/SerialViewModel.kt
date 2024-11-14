@@ -42,7 +42,7 @@ class SerialViewModel @Inject constructor(private val serialClient: SerialClient
 
     fun start() {
         //send start command
-        val startCommand = "START"
+        val startCommand = "START\n"
         serialClient.sendData(startCommand)
 
         if (isGeneratingData) return
@@ -61,10 +61,11 @@ class SerialViewModel @Inject constructor(private val serialClient: SerialClient
     }
 
     fun stop() {
+        serialClient.stop()
+
         receiveJob?.cancel()
         receiveJob = null
         isGeneratingData = false
-
     }
 
     fun disconnection() {
@@ -75,6 +76,9 @@ class SerialViewModel @Inject constructor(private val serialClient: SerialClient
         _chartData.value = startData
     }
 
+    fun save() {
+        sendConfigurationData("SETTING\n")
+    }
 
     fun sendConfigurationData(configData: String) {
         //send config data

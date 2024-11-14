@@ -161,23 +161,32 @@ class SerialClient(private val context: Context,
         executorService.submit(usbIoManager)
     }
 
-    fun close() {
+    fun stop() {
         try {
-            //
+            usbIoManager?.listener = null
             usbIoManager?.stop()
-            usbIoManager = null
+        } catch (e: IOException) {
+            Log.e("SerialClient", "Failed to stop serial port: ${e.message}")
+        }
+        usbIoManager = null
+    }
 
+    fun close() {
+        stop()
+        try {
             serialPort?.close()
-            connection?.close()
-
-            executorService.shutdownNow()
-
-            usbDevice = null
-//            usbManager = null
-
-            isConnected = false
         } catch (e: IOException) {
             Log.e("SerialClient", "Failed to close serial port: ${e.message}")
         }
+        serialPort = null
+
+        try {
+            connection?.close()
+        } catch (e: IOException) {
+            Log.e("SerialClient", "Failed to close connection: ${e.message}")
+        }
+        connection = null
+//        usbDevice = null
+        isConnected = false
     }
 }

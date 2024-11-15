@@ -34,6 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.rememberNavController
+import com.onebilliongod.android.jetpackandroid.utils.DatabaseUtil
 
 data class TrainingMode(val id: Int, val name: String)
 
@@ -42,7 +43,7 @@ data class TrainingMode(val id: Int, val name: String)
  */
 @Composable
 fun SettingScreen(modifier: Modifier = Modifier,
-                  viewModel: SerialViewModel
+                  viewModel: SerialViewModel,
 ) {
     var expanded by remember { mutableStateOf(false) }
     var selectedModeId by remember { mutableStateOf<Int>(1) }
@@ -117,6 +118,7 @@ fun SettingScreen(modifier: Modifier = Modifier,
             Button(
                 onClick = {
                     //TODO save data
+                    viewModel.test()
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Blue,

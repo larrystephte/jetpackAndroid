@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.onebilliongod.android.jetpackandroid.data.socket.client.SerialClient
 import com.onebilliongod.android.jetpackandroid.data.socket.parser.FloatPacketParser
+import com.onebilliongod.android.jetpackandroid.utils.DatabaseUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +22,8 @@ import kotlin.time.TimeSource
 
 
 @HiltViewModel
-class SerialViewModel @Inject constructor(private val serialClient: SerialClient) : ViewModel() {
+class SerialViewModel @Inject constructor(private val serialClient: SerialClient,
+                                          private val databaseUtil: DatabaseUtil) : ViewModel() {
     private val parser = FloatPacketParser()
 
     var isGeneratingData by mutableStateOf(false)
@@ -38,6 +40,10 @@ class SerialViewModel @Inject constructor(private val serialClient: SerialClient
 
     fun connect() {
         serialClient.connect()
+    }
+
+    fun test() {
+        databaseUtil.backupDatabase()
     }
 
     fun start() {

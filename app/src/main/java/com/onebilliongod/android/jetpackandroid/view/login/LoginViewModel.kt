@@ -10,7 +10,11 @@ import com.onebilliongod.android.jetpackandroid.data.local.PreferenceKeys
 import com.onebilliongod.android.jetpackandroid.data.local.PreferencesManager
 import com.onebilliongod.android.jetpackandroid.data.remote.models.request.LoginReq
 import com.onebilliongod.android.jetpackandroid.data.remote.repository.LoginRepository
+import com.onebilliongod.android.jetpackandroid.data.room.dao.UserDao
+import com.onebilliongod.android.jetpackandroid.data.room.entity.User
+import com.onebilliongod.android.jetpackandroid.utils.HashUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,12 +24,57 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class LoginViewModel @Inject constructor(private val repository: LoginRepository,
+                                         private val userDao: UserDao,
                                          private val preferencesManager: PreferencesManager) : ViewModel() {
     var loginState by mutableStateOf<Result<Boolean>?>(null)
         private set
 
     var isLoading by mutableStateOf(false)
         private set
+
+    private val password = "123456"
+
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            initializeDatabase()
+        }
+    }
+
+    private suspend fun initializeDatabase() {
+        val existingUser = userDao.getById(1)
+        Log.i("LoginViewModel", "check-init-user:$existingUser")
+        if (existingUser == null) {
+            val hashPassword = HashUtils.hmacMD5(password)
+            // insert initialize user
+            val initialUser = User(
+                id = 1,
+                name = "user",
+                password = hashPassword, // hash
+                role = "NORMAL",
+                createTime = System.currentTimeMillis(),
+                updateTime = System.currentTimeMillis()
+            )
+            userDao.insertAll(initialUser)
+        }
+    }
+
+    fun roomLogin(username: String, password: String) {
+        Log.i("LoginViewModel", "roomLogin-username:$username,password:$password")
+        isLoading = true
+
+        val hashPassword = HashUtils.hmacMD5(password)
+        viewModelScope.launch(Dispatchers.IO) {
+            Log.i("LoginViewModel", "roomLogin-viewModelScope:$hashPassword")
+            val user = userDao.login(username, hashPassword)
+            Log.i("LoginViewModel", "roomLogin-login-user:$user")
+            if (user != null) {
+                isLoading = false
+                loginState = Result.success(true)
+            } else {
+                loginState = Result.failure(Exception("The user haven`t been in the system"))
+            }
+        }
+    }
 
     /**
      * Mock login function for testing purposes.

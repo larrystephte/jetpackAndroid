@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
@@ -127,7 +128,8 @@ fun LoginScreen(navController: NavHostController,
             },
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions.Default.copy(
-                imeAction = ImeAction.Next
+                imeAction = ImeAction.Next,
+                keyboardType = KeyboardType.Number
             ),
             keyboardActions = KeyboardActions(
                 onNext = { keyboardController?.hide() }
@@ -140,7 +142,7 @@ fun LoginScreen(navController: NavHostController,
         // Login button
         Button(
             onClick = {
-                viewModel.mockLogin(username, password)
+                viewModel.roomLogin(username, password)
             },
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0E8CFF)),
             modifier = Modifier

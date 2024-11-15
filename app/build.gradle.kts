@@ -4,6 +4,7 @@ plugins {
 
     alias(libs.plugins.hilt.android)
     id("kotlin-kapt")
+    alias(libs.plugins.androidx.room)
     alias(libs.plugins.plugin.serialization)
 }
 
@@ -22,6 +23,10 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+    }
+
+    configurations {
+        implementation.get().exclude(mapOf("group" to "com.intellij", "module" to "annotations"))
     }
 
     buildTypes {
@@ -77,6 +82,10 @@ android {
     }
 }
 
+room {
+    schemaDirectory("$projectDir/schemas")
+}
+
 dependencies {
 
     implementation(libs.androidx.core.ktx)
@@ -115,6 +124,8 @@ dependencies {
     implementation(libs.room.paging)
     kapt(libs.room.compiler)
 //    ksp(libs.room.compiler)
+
+    implementation("commons-codec:commons-codec:1.15")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

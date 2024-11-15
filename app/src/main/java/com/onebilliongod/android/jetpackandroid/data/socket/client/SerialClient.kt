@@ -93,6 +93,11 @@ class SerialClient(private val context: Context,
     }
 
      fun connect() {
+         if (usbDevice == null) {
+             Log.i("SerialClient", "serial port is null,please plugin the serial port into your android device")
+             return
+         }
+
          if (isConnected) {
              Log.i("SerialClient", "device had connected")
              return

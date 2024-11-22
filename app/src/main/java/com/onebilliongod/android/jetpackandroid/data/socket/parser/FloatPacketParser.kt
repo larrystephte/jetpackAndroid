@@ -21,16 +21,8 @@ class FloatPacketParser : PacketParser<List<Float>>() {
         val numOfData = data.size / 4
 
         for (i in 0 until numOfData) {
-            //  Calculate the number of float data entries based on the data length.
-            val dataBytes = data.copyOfRange(i * 4, (i + 1) * 4)
-
-            // Reverse the byte order to handle little-endian format.
-            dataBytes.reverse()
-
-            // Create a ByteBuffer and set it to little-endian order.
-            val buffer = ByteBuffer.wrap(dataBytes).order(java.nio.ByteOrder.BIG_ENDIAN)
-
-            val floatValue = buffer.float
+            //parse Float Data
+            val floatValue = parseFloatData(i, data)
 
             // Extract the float value and format it to 2 decimal places.
             floats.add(floatValue)
@@ -38,6 +30,15 @@ class FloatPacketParser : PacketParser<List<Float>>() {
 
 
         return floats
+    }
+
+    private fun parseFloatData(offset: Int, data: ByteArray): Float {
+        val number = (data[offset].toInt() and 0xFF) or
+                ((data[offset + 1].toInt() and 0xFF) shl 8) or
+                ((data[offset + 2].toInt() and 0xFF) shl 16) or
+                ((data[offset + 3].toInt() and 0xFF) shl 24)
+        val floatValue = Float.fromBits(number)
+        return floatValue
     }
 
 }

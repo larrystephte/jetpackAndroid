@@ -93,14 +93,15 @@ func sendData(port *serial.Port) {
 
 
 func combination() string {
-    y, y2 ,y3 := mockRandomFloat()
-	value := "AAFF55" + "0C" + y + y2 + y3 + "BBBB"
+    y, y2 ,y3,y4,y5 := mockRandomFloat()
+	value := "AAFF55" + "88" + y + y2 + y3 + y4 + y5 + "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000440000000010000000020000000052BBBB"
 	value = strings.ReplaceAll(value, " ", "")
 	// fmt.Println("combination:", value)
 	return value
 }
 
 func floatConvertHex(value float32) (string) {
+	fmt.Printf("data:%s\n", value)
 	buffer := make([]byte, 4)
 	binary.LittleEndian.PutUint32(buffer, math.Float32bits(value))
 
@@ -114,12 +115,14 @@ func floatConvertHex(value float32) (string) {
 	return hexString
 }
 
-func mockRandomFloat() (string, string, string) {
+func mockRandomFloat() (string, string, string, string, string) {
 	nextY := rand.Float32() * 15
     y := floatConvertHex(nextY)
 	y2 := floatConvertHex(nextY * rand.Float32())
 	y3 := floatConvertHex(nextY * rand.Float32())
-	return y, y2, y3
+	y4 := floatConvertHex(nextY * rand.Float32())
+	y5 := floatConvertHex(nextY * rand.Float32())
+	return y, y2, y3, y4, y5
 }
 
 

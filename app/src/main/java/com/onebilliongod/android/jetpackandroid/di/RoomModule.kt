@@ -22,7 +22,6 @@ import javax.inject.Singleton
 object RoomModule {
 
     @Provides
-    @Singleton
     fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
         Log.i("RoomModule", "provideAppDatabase.")
         return Room.databaseBuilder(

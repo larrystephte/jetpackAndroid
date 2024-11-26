@@ -52,12 +52,12 @@ func receiveData(port *serial.Port) {
 			message += string(buffer[:n])
 
 			// If the received data contains a newline character, consider it a complete message
-			if message[len(message)-1] == '\n' {
+			// if message[len(message)-1] == '\n' {
 				// Print the complete message
 				fmt.Printf("Received complete message: %s", message)
 				//reset message to receive the next message
 				message = ""
-			}
+			// }
 		}
 	}
 }
@@ -94,14 +94,17 @@ func sendData(port *serial.Port) {
 
 func combination() string {
     y, y2 ,y3,y4,y5 := mockRandomFloat()
-	value := "AAFF55" + "88" + y + y2 + y3 + y4 + y5 + "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000440000000010000000020000000052BBBB"
+	ry, ry2 ,ry3,ry4,ry5 := mockRandomFloat()
+	ky, ky2 ,ky3,ky4,ky5 := mockRandomFloat()
+	rky, rky2 ,rky3,rky4,rky5 := mockRandomFloat()
+	value := "AAFF55" + "88" + y + y2 + y3 + y4 + y5 + "0000000000000000" + ry + ry2 + ry3 + ry4 + ry5 + "0000000000000000" + ky + ky2 + ky3 + ky4 + ky5 + "0000000000000000" + rky + rky2 + rky3 + rky4 + rky5 +  "0000000000000000000000000000000000000000000000000000BBBB"
 	value = strings.ReplaceAll(value, " ", "")
 	// fmt.Println("combination:", value)
 	return value
 }
 
 func floatConvertHex(value float32) (string) {
-	fmt.Printf("data:%s\n", value)
+	// fmt.Printf("data:%s\n", value)
 	buffer := make([]byte, 4)
 	binary.LittleEndian.PutUint32(buffer, math.Float32bits(value))
 

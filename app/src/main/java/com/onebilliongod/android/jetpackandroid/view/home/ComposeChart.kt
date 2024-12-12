@@ -1,6 +1,7 @@
 package com.onebilliongod.android.jetpackandroid.view.home
 
 import android.util.Log
+import androidx.compose.animation.core.snap
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -134,7 +135,9 @@ fun ComposeChart(modifier: Modifier, viewModel: SerialViewModel) {
         modifier = modifier,
         scrollState = rememberVicoScrollState(
             initialScroll = Scroll.Absolute.End,
+            autoScroll = Scroll.Absolute.End,
             autoScrollCondition = AutoScrollCondition.OnModelSizeIncreased,
+            autoScrollAnimationSpec = snap(),
         ),
         zoomState = rememberVicoZoomState(zoomEnabled = false),
     )

@@ -15,6 +15,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.sample
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.time.TimeMark
@@ -61,16 +65,16 @@ class SerialViewModel @Inject constructor(private val serialClient: SerialClient
 
         if (receiveJob == null || receiveJob?.isCancelled == true) {
             receiveJob = viewModelScope.launch {
-                startReadingSerialData()
+                receivedData()
             }
         }
     }
 
     fun stop() {
-        serialClient.stop()
+        stopCommand()
 
-        receiveJob?.cancel()
-        receiveJob = null
+//        receiveJob?.cancel()
+//        receiveJob = null
         isGeneratingData = false
     }
 
@@ -86,25 +90,34 @@ class SerialViewModel @Inject constructor(private val serialClient: SerialClient
         sendConfigurationData("SETTING\n")
     }
 
+    fun stopCommand() {
+        val cmd = "STOP"
+        serialClient.sendData(cmd)
+    }
+
     fun sendConfigurationData(configData: String) {
         //send config data
         serialClient.sendData(configData)
     }
 
-    fun startReadingSerialData() {
-        serialClient.startReading { message ->
-            val data = parser.parsePacket(message)
-            val t = startTime?.elapsedNow()!!.inWholeMilliseconds / 1000f
-            if (!data.isNullOrEmpty()) {
-                _chartData.value = ChartData(
+    private suspend fun receivedData() {
+        //use flow to control the backPressing
+        serialClient.receivedData
+            .map { data ->
+                val t = startTime?.elapsedNow()!!.inWholeMilliseconds / 1000f
+                ChartData(
                     x = t.toInt(),
                     y = data[0],
                     y2 = data[1],
                     y3 = data[2]
                 )
             }
-            Log.i("SerialViewModel", "data:${data}")
-        }
+            .buffer(capacity = 100)
+            .sample(200L)
+            .collect {
+                _chartData.value = it
+                Log.i("SerialViewModel", "data:${it}")
+            }
     }
 
 }

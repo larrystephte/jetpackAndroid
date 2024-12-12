@@ -40,8 +40,12 @@ abstract class PacketParser<T> {
         val length = packet[index].toInt() and 0xFF
         index++
 
+        if (length != packet.size) {
+            return null
+        }
+
         // Ensure that there is enough data for the length specified.
-        val dataEndIndex = index + length
+        val dataEndIndex = length - 2
         if (dataEndIndex + endSequence.size > packet.size) return null
 
         val dataContent = packet.copyOfRange(index, dataEndIndex)
@@ -50,6 +54,7 @@ abstract class PacketParser<T> {
         val packetEnd = packet.copyOfRange(index, index + endSequence.size)
         if (!packetEnd.contentEquals(endSequence)) return null
 
+//        Log.i("PacketParser", "dataContent: ${dataContent.size}")
         return parseData(dataContent)
     }
 }

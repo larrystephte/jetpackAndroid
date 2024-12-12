@@ -12,8 +12,15 @@ import com.hoho.android.usbserial.driver.ProbeTable
 import com.hoho.android.usbserial.driver.UsbSerialPort
 import com.hoho.android.usbserial.driver.UsbSerialProber
 import com.hoho.android.usbserial.util.SerialInputOutputManager
+import com.onebilliongod.android.jetpackandroid.data.socket.parser.FloatPacketParser
 import com.onebilliongod.android.jetpackandroid.view.receiver.ACTION_USB_PERMISSION
 import com.onebilliongod.android.jetpackandroid.view.receiver.UsbPermissionReceiver
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.launch
 import java.io.IOException
 import java.util.concurrent.Executors
 
@@ -39,6 +46,9 @@ class SerialClient(private val context: Context,
     private var usbIoManager: SerialInputOutputManager? = null
     private val executorService = Executors.newSingleThreadExecutor()
 
+    private val parser = FloatPacketParser()
+    private val _receivedData = MutableSharedFlow<List<Float>>(extraBufferCapacity = 100)
+    val receivedData: SharedFlow<List<Float>> = _receivedData.asSharedFlow()
 
     fun probe() {
         Log.i("SerialClient", "probe serial device")
@@ -124,6 +134,9 @@ class SerialClient(private val context: Context,
                 )
                 isConnected = true
                 Log.i("SerialClient", "device is connected")
+
+                //start to read message
+                startReading()
             } else {
                 Log.e("SerialClient", "connection is null")
             }
@@ -147,6 +160,21 @@ class SerialClient(private val context: Context,
         }
     }
 
+    fun startReading() {
+        startReading{ message ->
+            val data = parser.parsePacket(message)
+
+            // 启动串口读取协程
+            CoroutineScope(Dispatchers.IO).launch {
+                if (data != null) {
+                    _receivedData.emit(data)
+                } else {
+                    Log.w("SerialClient", "data is null")
+                }
+            }
+        }
+    }
+
     fun startReading(listener: (ByteArray) -> Unit) {
         if (!isConnected) {
             Log.e("SerialClient", "The serial port is not connected and data cannot be read.")
@@ -163,6 +191,7 @@ class SerialClient(private val context: Context,
             }
         })
 
+        usbIoManager?.readBufferSize = 136
         executorService.submit(usbIoManager)
     }
 

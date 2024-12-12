@@ -17,7 +17,7 @@ object SerialModule {
     private val config = SerialConfig(
         vendorId = 6790,
         productId = 29987,
-        baudRate = 9600,
+        baudRate = 115200,
         dataBits = 8,
         stopBits = UsbSerialPort.STOPBITS_1,
         parity = UsbSerialPort.PARITY_NONE

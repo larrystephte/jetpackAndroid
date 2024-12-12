@@ -1,0 +1,1 @@
+INSERT INTO user (id, name, password, role, create_time, update_time) VALUES (1, 'user', 'D02534E1C3787CFF88F957A668EA1268', 'NORMAL', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);

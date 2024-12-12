@@ -15,7 +15,7 @@ import (
 func serail() {
 	config := &serial.Config{
 		Name:        "COM3",             // Serial port name
-		Baud:        9600,               // Baud rate
+		Baud:        115200,               // Baud rate 9600
 		// Parity:      serial.NoParity,    // NoParity
 		Size:        8,                  // Data bits(8)
 		// StopBits:    serial.OneStopBit,  // 1 stop bit
@@ -87,7 +87,8 @@ func sendData(port *serial.Port) {
 		fmt.Printf("Sent data: %s\n", hexString)
 
 		// Wait for 2 seconds before sending data again
-		time.Sleep(2 * time.Second)
+		time.Sleep(100 * time.Millisecond)
+		// time.Sleep(1 * time.Second)
 	}
 }
 
